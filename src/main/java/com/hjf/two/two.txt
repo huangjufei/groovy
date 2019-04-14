@@ -1,0 +1,56 @@
+
+def version = 2;
+//普通字符串
+
+def s1 = 'imooc'
+
+//可以添加变量的字符串
+def s2 = "gradle version is ${version}"
+
+//可以换行的字符串
+def s3 = '''my name is
+imooc'''
+
+
+println s1
+println s2
+println s3
+
+//5 集合api
+//list
+def buildTools=['ant','maven']
+buildTools << 'gradle'
+assert buildTools.getClass() == ArrayList
+assert buildTools.size() ==3
+//map
+def buildYears = ['ant':2000, 'maven':2004]
+buildYears.gradle = 2009
+
+println buildYears.ant
+println buildYears['gradle']
+println  buildYears.getClass()
+
+
+
+//6 闭包,带参数的;c1 是一个变量；它里面可以接受一个参数且打印这个参数；
+def c1 = {
+    v ->
+        println v
+}
+//不带参数的闭包，只是打印了一句，当然可以是很多句
+def c2 ={
+    println 'hello'
+}
+
+//这个方法可以接受传值的闭包
+def method1(Closure closure){
+    closure('param')
+}
+
+//这个方法接受的不传值的闭包
+def method2(Closure closure){
+    closure()
+}
+
+method1(c1);
+method2(c2);

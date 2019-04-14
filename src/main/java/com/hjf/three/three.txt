@@ -1,0 +1,40 @@
+
+
+/**
+核心重点来了；
+下面代码就是初始项目自动生成的基础gradle 配置文件
+首先 每个gradle配置文件都有一个隐式的对象就是project,
+所以下面的代码如：project.group
+
+下面的方法都是two里面的闭包传递；
+如：
+repositories {
+    mavenCentral()
+}
+这个段的啥意思：
+project.repositories 属性赋值；只是赋值传入一个方法；
+
+
+*/
+
+
+
+
+
+
+plugins {
+    id 'java'
+}
+
+group 'com.hjf'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}

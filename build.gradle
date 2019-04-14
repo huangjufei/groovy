@@ -1,0 +1,98 @@
+plugins {
+    id 'java'
+    id 'war'
+}
+
+group 'com.hjf'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    //这个就是私服，定义url就可以
+     maven{
+        url ''
+     }
+    //多个仓库按循序查到，找到就不找了
+    mavenLocal()
+    mavenCentral()
+}
+
+
+dependencies {
+    /**
+     * 一共有这4种依赖；
+     * compile ,testCompile ,runtime,testRuntime
+     * 作用就是在不同的时间段使用不同的依赖；降低不无用的依赖
+     * compile 一定是最高依赖，其他3种豆依赖它；所以测试的尽量不要放里面；
+     */
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile 'ch.qos.logback:logback-classic:1.2.1'
+    compile('org.hibernate:hibernate-core:3.6.3.Final'){
+        //方式1:排除hibernate slf4j的依赖 moldule 就是name通过help中的dependencies可以group和name
+        exclude group:"org.slf4j" ,module:"slf4j-api"
+    }
+}
+
+
+// 下面是这定义的方法
+
+
+//创建目录的闭包
+def  createDir= {
+    path ->
+        File dir = new File(path);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+}
+
+//自定义方法在Tasks的other目录中
+task makeJavaDir(){
+    def  paths = ['src/main/java','src/main/resources','sec/main/test']
+    //遍历数组，循环调用闭包,这里可以dolast 也是可以的
+    doFirst{
+        //闭包是可以重用的
+        paths.forEach(createDir);
+    }
+}
+
+//执行WebDir 会先执行上面的javaDir方法；可以从输出日志看到；
+task makeWebDir(){
+    //依赖上面的task，
+    dependsOn 'makeJavaDir'
+    def paths = ['src/main/webapp']
+    //遍历数组，循环调用闭包
+    doLast{
+        //这个使用的和上面的都是一个闭包
+        paths.forEach(createDir);
+    }
+}
+
+//gradle 主要有3个生命周期：
+//1，初始化(主要是那些项目需要引入) 2，配置(赋值的操作） 3，执行（doLast和doFirst）
+
+/**
+ *
+ * 依赖版本冲突首先是要查看那些导致了冲突
+ * failOnVersionConflict() 配置这个方法可以查看到；平时关闭
+ *
+ * gradle 如何解决版本冲突？
+ *
+ * 1，排除一个版本 ----> 方式1
+ * 2，强制依赖一个版本 ---> 方式2
+ * 
+ * 推荐先使用方式1，没有解决在考虑方式2
+ * 且方式2放最下面，就算把方式2放到dependencies前也是使用方式2；可能是因为configurations.all {}的原因
+ **/
+
+configurations.all {
+    resolutionStrategy {
+        //不让gradle使用默认(最高版本)策略来解决冲突；
+        // 而是打印出来;排查问题时可以选择性的打开，一般关闭；
+        failOnVersionConflict()
+        //方式2
+        force 'org.slf4j:slf4j-api:1.7.24'
+    }
+}
+

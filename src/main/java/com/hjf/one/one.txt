@@ -1,0 +1,16 @@
+public class FirstGroovy{
+    private int major;
+    //groovy 可以不需要结束符号，可以不需要get,set方法
+    private int minor
+
+    public FirstGroovy(int major,int minor){
+        this.major = major
+        this.minor = minor
+    }
+
+}
+    //下面是使用上面的类
+    FirstGroovy g1 = new FirstGroovy(3,2)
+//打印结果，比Java更为简单
+println "major:" + g1.major
+        println g1.min
